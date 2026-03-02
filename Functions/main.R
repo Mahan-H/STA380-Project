@@ -1,6 +1,8 @@
 # STA380 Project 
 # Project: Decoherence in a Hadamard Quantum Random Walk on a Line
 
+library(tidyverse)
+
 ############################################## CORE QUANTUM OBJECTS / HELPERS
 
 pos_grid <- function(T) {
@@ -488,36 +490,48 @@ sim_srw <- function(T) {
 
 build_dist <- function(noisy_w, noiseless_w, srw) {
   
-  T <- noisy_dist$T
+  T <- noisy_w$T
   
   pos <- pos_grid(T)
   
-  noisy <- data.frame(pos = pos, noisy_w$dists[t + 1,], model = "noisy")
+  noisy_dist <- noisy_w$dists[T + 1,]
   
-  noiseless <- data.frame(pos = pos, noiseless_w$dists[t + 1,], model = "noiseless")
+  noiseless_dist <- noiseless_w$dists[T + 1,]
   
-  srw <- data.frame(pos = pos, srw$dists[t + 1,], model = "classical")
+  srw_dist <- srw$dists[T + 1,]
   
-  models <- rbind(noisy, noiseless, srw)
+  model <- data.frame(pos = pos, noisy_dist, noiseless_dist, srw_dist)
   
-  return(models)
+  names(model)[2] <- "noisy"
+  
+  names(model)[3] <- "noiseless"
+  
+  names(model)[4] <- "classical"
+  
+  return(model)
 }
 
 build_variance_overlay <- function(noisy_w, noiseless_w, srw) {
   
-  T <- noisy_dist$T
+  T <- noisy_w$T
   
   time <- 0:T
   
-  noisy <- data.frame(time = time, noisy_w$vars, model = "noisy")
+  noisy_vars <- noisy_w$vars
   
-  noiseless <- data.frame(time = time, noiseless_w$vars, model = "noiseless")
+  noiseless_vars <- noiseless_w$vars
   
-  srw <- data.frame(time = time, srw$vars, model = "classical")
+  srw_vars <- srw$vars
   
-  models <- rbind(noisy, noiseless, srw)
+  model <- data.frame(time = time, noisy_vars, noiseless_vars, srw_vars)
   
-  return(models)
+  names(model)[2] <- "noisy"
+  
+  names(model)[3] <- "noiseless"
+  
+  names(model)[4] <- "classical"
+  
+  return(model)
 }
 
 build_summary_table <- function(noisy_w, noiseless_w, srw) {
@@ -536,7 +550,17 @@ build_summary_table <- function(noisy_w, noiseless_w, srw) {
   
   srw_var <- srw$vars[T + 1]
   
-  summary <- data.frame(c(noisy_mean, noiseless_mean, srw_mean), c(noisy_var, noiseless_var, srw_var))
+  summary <- data.frame(c("noisy", "noiseless", "classical"),
+                        c(noisy_mean, noiseless_mean, srw_mean),
+                        c(noisy_var, noiseless_var, srw_var))
+  
+  names(summary)[1] <- "model"
+  
+  names(summary)[2] <- "mean"
+  
+  names(summary)[3] <- "variance"
+  
+  return(summary)
 }
 
 
@@ -551,3 +575,17 @@ plot_dist_overlay <- function(dist_overlay_df) {
 plot_var_overlay <- function(var_overlay_df) {
   # TODO:
 }
+
+
+############################## RANDOM TESTS
+
+T <- 10
+N <- 50
+channel <- "dephasing"
+init_coin <- "symmetric"
+p <- 0.2
+seed <- 100
+
+C <- sim_srw(T)
+B <- sim_noiseless_qrw(T, init_coin)
+A <- sim_noisy_qrw(T, N, channel, init_coin, p, seed)
