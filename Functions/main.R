@@ -562,30 +562,3 @@ build_summary_table <- function(noisy_w, noiseless_w, srw) {
   
   return(summary)
 }
-
-
-
-############################ PLOTTING OUTPUT
-
-
-plot_dist_overlay <- function(dist_overlay_df) {
-  # TODO:
-}
-
-plot_var_overlay <- function(var_overlay_df) {
-  # TODO:
-}
-
-
-############################## RANDOM TESTS
-
-T <- 10
-N <- 50
-channel <- "dephasing"
-init_coin <- "symmetric"
-p <- 0.2
-seed <- 100
-
-C <- sim_srw(T)
-B <- sim_noiseless_qrw(T, init_coin)
-A <- sim_noisy_qrw(T, N, channel, init_coin, p, seed)
