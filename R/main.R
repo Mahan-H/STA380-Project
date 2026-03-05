@@ -331,13 +331,7 @@ normalize_state <- function(state, tol = 1e-12) {
 #' 
 #' @export
 apply_coin_op <- function(state, coin_matrix) {
-  
-  for(i in 1:ncol(state)){
-    
-    state[, i] <- coin_matrix %*% state[, i]
-  }
-  
-  return(state)
+  return(coin_matrix %*% state)
 }
 
 #' Apply the conditional shift operator.
@@ -366,7 +360,6 @@ apply_shift_op <- function(state) {
   new_state <- matrix(0, nrow = 2, ncol = n)
   
   for(i in 1:n){
-    
     if(i < n){
       
       new_state[1, i + 1] <- state[1, i]
@@ -496,6 +489,8 @@ kraus_depolarizing <- function(p) {
 #' @export
 get_kraus_ops <- function(channel, p) {
   
+  channel <- match.arg(channel, c("dephasing", "depolarizing"))
+  
   if(channel == "dephasing"){
     
     return(kraus_dephasing(p))
@@ -505,7 +500,8 @@ get_kraus_ops <- function(channel, p) {
     return(kraus_depolarizing(p))
     
   } else {
-    
+    # Anna: this part shouldn't run now; you would get an error from match.arg
+    # from earlier.
     stop("Invalid channel.")
   }
 }
@@ -531,13 +527,7 @@ get_kraus_ops <- function(channel, p) {
 #' 
 #' @export
 apply_coin_kraus <- function(state, K) {
-  
-  for(i in 1:ncol(state)){
-    
-    state[, i] <- K %*% state[, i]
-  }
-  
-  return(state)
+  return(K %*% state)
 }
 
 #' Compute Kraus outcome probabilities.
@@ -744,19 +734,7 @@ sim_noisy_qrw <- function(T, N, channel, init_coin, p, seed = NULL) {
 #' 
 #' @export
 pos_dist <- function(state) {
-  
-  n <- ncol(state)
-  
-  probs <- numeric(n)
-  
-  for(i in 1:n){
-    
-    prob <- abs(state[1, i])^2 + abs(state[2, i])^2
-    
-    probs[i] <- prob
-  }
-  
-  return(probs)
+  return(abs(state[1,])^2 + abs(state[2,])^2)
 }
 
 #' Compute the mean position.
@@ -894,17 +872,11 @@ srw_dist_at_t <- function(t, pos) {
   
   n <- length(pos)
   
-  probs <- numeric(n)
+  k   <- round((t + pos) / 2)
   
-  for(i in 1:n){
-    
-    if(abs(pos[i]) <= t & (t + pos[i]) %% 2 == 0){
-      
-      k = (t + pos[i])/2
-      
-      probs[i] <-  choose(t, k) * (1/2)^t
-    }
-  }
+  valid <- ((abs(pos) <= t) & ((t + pos) %% 2 == 0))
+  
+  probs <- ifelse(valid, choose(t, k) * (1/2)^t, 0)
   
   return(probs)
 }
