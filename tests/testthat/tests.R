@@ -223,7 +223,7 @@ test_that("apply_decoherence_step returns a normalized state of the same dimensi
 test_that("pos_dist, mean_pos, and var_pos work on simple examples", {
   
   state <- matrix(c(0, 1 / sqrt(2), 0,
-                 0, 1i / sqrt(2), 0), nrow = 2, byrow = TRUE)
+                    0, 1i / sqrt(2), 0), nrow = 2, byrow = TRUE)
   
   probs <- pos_dist(state)
   

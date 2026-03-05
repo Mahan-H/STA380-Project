@@ -1,0 +1,415 @@
+---
+title: "Decoherence in a Hadamard Quantum Random Walk on a Line"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Decoherence in a Hadamard Quantum Random Walk on a Line}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ref.bib
+nocite: "@*"
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4
+)
+```
+
+## Overview
+
+This vignette demonstrates how to simulate and compare:
+
+- a **noiseless** Hadamard quantum random walk (QRW),
+
+- a **noisy** (decohering) Hadamard QRW simulated via **Monte Carlo quantum trajectories**, and
+
+- a **classical** symmetric random walk (SRW) baseline.
+
+The core unitary QRW step is
+
+\[
+U = S(H \otimes I_p),
+\]
+
+where \(H\) is the Hadamard coin and \(S\) is the conditional shift. In the noisy case, the state is updated via a Kraus channel on the coin, using Monte Carlo sampling of outcomes.
+
+```{r load}
+
+library(tidyverse)
+
+library(decoherentqrw)
+```
+
+## Quick start
+
+We will simulate each model for the same number of steps `T`.
+
+```{r}
+
+T <- 20
+```
+
+### Noiseless Hadamard Walk
+
+```{r noiseless-sim}
+
+T <- 60
+
+noiseless <- sim_noiseless_qrw(T, "symmetric")
+
+srw <- sim_srw(T)
+
+pos <- pos_grid(T)
+```
+
+## Final Position Distribution
+
+```{r noiseless-dist-plot}
+
+tibble(
+  
+  position = pos,
+  
+  prob = noiseless$dists[T + 1, ]
+  
+) |>
+  ggplot(aes(x = position, y = prob)) +
+  
+  geom_col(fill = "#2E75B6", width = 0.8, alpha = 0.85) +
+  
+  labs(
+    title = paste0("Noiseless Hadamard QRW — Final Distribution (T = ", T, ")"),
+    
+    subtitle = "Symmetric initial coin state  |ψ₀⟩ = (|↑⟩ + i|↓⟩)/√2",
+    
+    x = "Position",
+    
+    y = "Probability"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+### Noisy Hadamard QRW (Monte Carlo trajectories)
+
+For the noisy walk we choose:
+
+- a decoherence channel (`"dephasing"` or `"depolarizing"`)
+
+- strength `p in [0,1]`
+
+- number of trajectories `N`
+
+```{r}
+
+N <- 200
+
+channel <- "dephasing"
+
+p <- 0.15
+
+noisy <- sim_noisy_qrw(
+  T = T, N = N,
+  
+  channel = channel,
+  
+  init_coin = "symmetric",
+  
+  p = p,
+  
+  seed = 1
+)
+
+str(noisy)
+```
+
+### Classical SRW baseline
+
+```{r}
+classical <- sim_srw(T = T)
+
+str(classical)
+```
+
+## Interpreting the outputs
+
+### Final time distribution comparison
+
+At time `T`, we can compare the three final distributions:
+
+```{r noisy-deph-sim}
+
+set.seed(42)
+
+T  <- 60
+
+N <- 2000
+
+noisy_deph <- sim_noisy_qrw(
+  
+  T = T,
+  
+  N = N,
+  
+  channel = "dephasing",
+  
+  init_coin = "symmetric",
+  
+  p = 0.1,
+  
+  seed = 42
+)
+```
+
+An overlay plot of all three final distributions:
+
+```{r}
+dist_tbl <- build_dist(noisy_deph, noiseless, srw)
+
+dist_tbl |>
+  
+  pivot_longer(c(noisy, noiseless, classical),
+               names_to = "model", values_to = "prob") |>
+  
+  mutate(model = factor(model,
+                        
+    levels = c("noiseless", "noisy", "classical"),
+    
+    labels = c("Noiseless QRW", "Noisy QRW (dephasing, p=0.1)", "Classical RW"))) |>
+  
+  ggplot(aes(x = pos, y = prob, colour = model)) +
+  
+  geom_line(linewidth = 0.9, alpha = 0.9) +
+  
+  scale_colour_manual(values = c("#2E75B6", "#E74C3C", "#27AE60")) +
+  
+  labs(
+    title    = paste0("Final Position Distributions (T = ", T, ", N = ", N, ")"),
+    subtitle = "Dephasing channel at p = 0.1 partially destroys quantum coherence",
+    x        = "Position", y = "Probability", colour = NULL
+  ) +
+  
+  theme_minimal(base_size = 13) +
+  
+  theme(legend.position = "top")
+```
+
+# Quantum to Classical Transition
+
+We vary $p \in \{0, 0.05, 0.1, 0.3, 0.5, 1.0\}$ and examine how the position 
+variance changes from ballistic ($\text{Var} \sim t^2$) to diffusive 
+($\text{Var} \sim t$) scaling.
+
+```{r transition-sim}
+set.seed(99)
+
+p_sweep  <- c(0, 0.05, 0.1, 0.3, 0.5, 1.0)
+
+T  <- 50
+
+N  <- 1500
+
+nl <- sim_noiseless_qrw(T, "symmetric")
+
+cl <- sim_srw(T)
+
+noisy_list <- lapply(p_sweep, function(p) {
+  
+  sim_noisy_qrw(T, N, "dephasing", "symmetric", p, seed = 99)
+})
+
+names(noisy_list) <- as.character(p_sweep)
+```
+
+```{r}
+
+var_rows <- lapply(p_sweep, function(p) {
+  
+  tibble(
+    
+    time  = 0:T,
+    
+    var   = noisy_list[[as.character(p)]]$vars,
+    
+    label = paste0("Noisy p=", p)
+  )
+})
+
+var_tbl <- bind_rows(var_rows) |>
+  
+  bind_rows(
+    
+    tibble(time = 0:T, var = nl$vars,  label = "Noiseless QRW"),
+    
+    tibble(time = 0:T, var = cl$vars,  label = "Classical RW")
+  ) |>
+  
+  mutate(label = factor(label, levels = c(
+    
+    "Noiseless QRW",
+    
+    paste0("Noisy p=", p_sweep),
+    
+    "Classical RW"
+  )))
+
+ggplot(var_tbl, aes(x = time, y = var, colour = label, linetype = label)) +
+  
+  geom_line(linewidth = 0.85) +
+  
+  scale_colour_manual(values = c(
+    "Noiseless QRW" = "#2E75B6",
+    "Noisy p=0"     = "#5DADE2",
+    "Noisy p=0.05"  = "#A569BD",
+    "Noisy p=0.1"   = "#E74C3C",
+    "Noisy p=0.3"   = "#E67E22",
+    "Noisy p=0.5"   = "#F1C40F",
+    "Noisy p=1"     = "#7F8C8D",
+    "Classical RW"  = "#27AE60"
+  )) +
+  
+  scale_linetype_manual(values = c(
+    "Noiseless QRW" = "solid",
+    "Noisy p=0"     = "solid",
+    "Noisy p=0.05"  = "dashed",
+    "Noisy p=0.1"   = "dashed",
+    "Noisy p=0.3"   = "dotdash",
+    "Noisy p=0.5"   = "dotdash",
+    "Noisy p=1"     = "dotted",
+    "Classical RW"  = "solid"
+  )) +
+  
+  labs(
+    title    = "Variance vs. Time — Quantum to Classical Transition",
+    
+    subtitle = "Ballistic (Var ~ t²) transitions to diffusive (Var ~ t) as p increases",
+    
+    x        = "Time Step", y = "Var(X_t)",
+    
+    colour   = NULL, linetype = NULL
+  ) +
+  
+  theme_minimal(base_size = 13) +
+  
+  theme(legend.position = "right")
+```
+
+# Dephasing vs. Depolarizing Channel Comparison
+
+```{r channel-comparison}
+set.seed(7)
+
+p  <- 0.2
+
+T  <- 60
+
+N  <- 2000
+
+noisy_dep  <- sim_noisy_qrw(T, N, "dephasing",    "symmetric", p, seed = 7)
+
+noisy_depo <- sim_noisy_qrw(T, N, "depolarizing", "symmetric", p, seed = 7)
+
+nl    <- sim_noiseless_qrw(T, "symmetric")
+
+cl    <- sim_srw(T)
+```
+
+```{r}
+tibble(
+  
+  time         = 0:T,
+  
+  Noiseless    = nl$vars,
+  
+  Dephasing    = noisy_dep$vars,
+  
+  Depolarizing = noisy_depo$vars,
+  
+  Classical    = cl$vars
+) |>
+  
+  pivot_longer(-time, names_to = "model", values_to = "var") |>
+  
+  mutate(model = factor(model,
+    levels = c("Noiseless", "Dephasing", "Depolarizing", "Classical"))) |>
+  
+  ggplot(aes(x = time, y = var, colour = model)) +
+  
+  geom_line(linewidth = 0.9) +
+  
+  scale_colour_manual(
+    
+    values = c("Noiseless" = "#2E75B6", "Dephasing" = "#E74C3C",
+               
+               "Depolarizing" = "#E67E22", "Classical" = "#27AE60")) +
+  
+  labs(
+    
+    title    = paste0("Variance vs. Time — Channel Comparison (p = ", p, ")"),
+    
+    x        = "Time Step", y = "Var(X_t)", colour = NULL
+  ) +
+  
+  theme_minimal(base_size = 13) +
+  
+  theme(legend.position = "top")
+```
+
+# Summary table at time `T`
+
+```{r}
+T    <- 60
+
+N    <- 3000
+
+set.seed(123)
+
+noisy_w    <- sim_noisy_qrw(T, N, "dephasing", "symmetric", 0.1, seed = 123)
+
+noiseless_w   <- sim_noiseless_qrw(T, "symmetric")
+
+classical_w   <- sim_srw(T)
+
+summ <- build_summary_table(noisy_w, noiseless_w, classical_w)
+
+knitr::kable(
+  
+  summ,
+  
+  digits  = 4,
+  
+  caption = paste0("Final-time summary (T = ", T, ", N = ", N,
+                   ", dephasing p = 0.1, symmetric initial coin)"),
+  col.names = c("Model", "Mean E[X_T]", "Variance Var(X_T)")
+)
+```
+
+## Reproducibility
+
+For Monte Carlo runs, use the `seed` argument in `sim_noisy_qrw()` to make results reproducible.
+
+```{r}
+noisy2 <- sim_noisy_qrw(T = 10, N = 50, channel = "dephasing",
+                        init_coin = "symmetric", p = 0.2, seed = 123)
+tail(noisy2$vars, 1)
+```
+
+# Comments
+
+A.I usage description:
+
+It was used to help with understanding and creating roxygen documentation and the vignette. 
+
+It was used to help with creation of some of the plots. 
+The R Graph Gallery was also used to help with plots.
+
+Some tests were created using A.I, however every test was manually confirmed. 
+The majority of the tests were manually made.
+
+None of the implementation was created by A.I, however once the all the implementations were done 
+A.I was used to verify the validity of the implementations, which lead to discovery some minor bugs
+such as off by one errors and rounding errors.
+
+# References

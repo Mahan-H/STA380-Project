@@ -1047,7 +1047,7 @@ build_variance_overlay <- function(noisy_w, noiseless_w, srw) {
 #' @param noiseless_w Result object returned by \code{sim_noiseless_qrw()}.
 #' @param srw Result object returned by \code{sim_srw()}.
 #'
-#' @return A data frame with one row per model and columns for final-time
+#' @return A data frame with one row per model and columns for final time
 #' mean and variance.
 #'
 #' @examples

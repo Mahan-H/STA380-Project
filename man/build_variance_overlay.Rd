@@ -1,0 +1,79 @@
+\name{build_variance_overlay}
+\alias{build_variance_overlay}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+A Capitalized Title (ideally limited to 65 characters)
+}
+\description{
+%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+}
+\usage{
+build_variance_overlay(noisy_w, noiseless_w, srw)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{noisy_w}{
+%%     ~~Describe \code{noisy_w} here~~
+}
+  \item{noiseless_w}{
+%%     ~~Describe \code{noiseless_w} here~~
+}
+  \item{srw}{
+%%     ~~Describe \code{srw} here~~
+}
+}
+\details{
+%%  ~~ If necessary, more details than the description above ~~
+}
+\value{
+%%  ~Describe the value returned
+%%  If it is a LIST, use
+%%  \item{comp1 }{Description of 'comp1'}
+%%  \item{comp2 }{Description of 'comp2'}
+%% ...
+}
+\references{
+%% ~put references to the literature/web site here ~
+}
+\author{
+%%  ~~who you are~~
+}
+\note{
+%%  ~~further notes~~
+}
+
+%% ~Make other sections like Warning with \section{Warning }{....} ~
+
+\seealso{
+%% ~~objects to See Also as \code{\link{help}}, ~~~
+}
+\examples{
+##---- Should be DIRECTLY executable !! ----
+##-- ==>  Define data, use random,
+##--	or standard data sets, see data().
+
+## The function is currently defined as
+function (noisy_w, noiseless_w, srw) 
+{
+    T <- noisy_w$T
+    time <- 0:T
+    noisy_vars <- noisy_w$vars
+    noiseless_vars <- noiseless_w$vars
+    srw_vars <- srw$vars
+    model <- data.frame(time = time, noisy_vars, noiseless_vars, 
+        srw_vars)
+    names(model)[2] <- "noisy"
+    names(model)[3] <- "noiseless"
+    names(model)[4] <- "classical"
+    return(model)
+  }
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory (show via RShowDoc("KEYWORDS")):
+% \keyword{ ~kwd1 }
+% \keyword{ ~kwd2 }
+% Use only one keyword per line.
+% For non-standard keywords, use \concept instead of \keyword:
+% \concept{ ~cpt1 }
+% \concept{ ~cpt2 }
+% Use only one concept per line.

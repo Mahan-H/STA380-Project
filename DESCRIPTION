@@ -1,0 +1,19 @@
+Package: decoherentqrw
+Title: Decoherence in a Hadamard Quantum Random Walk on a Line
+Version: 0.0.0.9000
+Authors@R: 
+    person("Mahan", "Hooshmandkhayat", 
+           email = "mahan.hooshmandkhayat@mail.utoronto.ca", 
+           role = c("aut", "cre"))
+Description: Tools for simulating noiseless and noisy Hadamard quantum random walks on a line, including dephasing and depolarizing decoherence channels.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends: R (>= 3.5), mvtnorm
+Suggests: 
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Config/testthat/edition: 3
+VignetteBuilder: knitr
