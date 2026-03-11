@@ -39,6 +39,7 @@ where \(H\) is the Hadamard coin and \(S\) is the conditional shift. In the nois
 ```{r load}
 
 library(tidyverse)
+library(mvtnorm)
 
 library(decoherentqrw)
 ```

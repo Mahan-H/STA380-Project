@@ -1,6 +1,10 @@
 # STA380 Project 
 # Project: Decoherence in a Hadamard Quantum Random Walk on a Line
 
+library(tidyverse)
+
+library(mvtnorm)
+
 ############################################## CORE QUANTUM OBJECTS / HELPERS
 
 #' Create the position grid for the walk.
@@ -1011,6 +1015,9 @@ build_dist <- function(noisy_w, noiseless_w, srw) {
 #' noiseless <- sim_noiseless_qrw(2, "symmetric")
 #' classical <- sim_srw(2)
 #' build_variance_overlay(noisy, noiseless, classical)
+#' 
+#' @import tidyverse
+#' @import mvtnorm
 #' 
 #' @export
 build_variance_overlay <- function(noisy_w, noiseless_w, srw) {

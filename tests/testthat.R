@@ -7,6 +7,5 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(anRpackage)
 
-test_check("anRpackage")
+test_check("decoherentqrw")
