@@ -1,8 +1,6 @@
 # STA380 Project 
 # Project: Decoherence in a Hadamard Quantum Random Walk on a Line
 
-library(tidyverse)
-
 ############################################## CORE QUANTUM OBJECTS / HELPERS
 
 #' Create the position grid for the walk.
