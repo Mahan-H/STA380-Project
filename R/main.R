@@ -501,10 +501,6 @@ get_kraus_ops <- function(channel, p) {
     
     return(kraus_depolarizing(p))
     
-  } else {
-    # Anna: this part shouldn't run now; you would get an error from match.arg
-    # from earlier.
-    stop("Invalid channel.")
   }
 }
 

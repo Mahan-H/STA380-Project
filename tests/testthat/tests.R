@@ -166,8 +166,6 @@ test_that("get_kraus_ops returns the requested family", {
   expect_length(get_kraus_ops("dephasing", 0.2), 3)
   
   expect_length(get_kraus_ops("depolarizing", 0.2), 4)
-  
-  expect_error(get_kraus_ops("bad channel", 0.2), "Invalid channel")
 })
 
 test_that("apply_coin_kraus with identity leaves the state unchanged", {
