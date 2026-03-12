@@ -37,8 +37,8 @@ U = S(H \otimes I_p),
 where \(H\) is the Hadamard coin and \(S\) is the conditional shift. In the noisy case, the state is updated via a Kraus channel on the coin, using Monte Carlo sampling of outcomes.
 
 ```{r load}
-
 library(tidyverse)
+
 library(mvtnorm)
 
 library(decoherentqrw)
@@ -412,5 +412,9 @@ The majority of the tests were manually made.
 None of the implementation was created by A.I, however once the all the implementations were done 
 A.I was used to verify the validity of the implementations, which lead to discovery some minor bugs
 such as off by one errors and rounding errors.
+
+Updated A.I usage:
+
+No A.I was used for package creation.
 
 # References
