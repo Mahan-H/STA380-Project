@@ -110,7 +110,7 @@ plot_dist_overlay <- function(plot_df, selected_models, T, N, channel, p) {
     
     geom_line(linewidth = 0.9, alpha = 0.9) +
     
-    scale_colour_manual(values = model_cols[selected_models]) +
+    scale_colour_manual(values = setNames(model_cols[selected_models], model_labels[selected_models])) +
     
     labs(
       
@@ -136,7 +136,7 @@ plot_var_overlay <- function(plot_df, selected_models) {
     
     geom_line(linewidth = 0.9) +
     
-    scale_colour_manual(values = model_cols[selected_models]) +
+    scale_colour_manual(values = setNames(model_cols[selected_models], model_labels[selected_models])) +
     
     labs(
       

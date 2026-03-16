@@ -155,15 +155,6 @@ ui <- page_sidebar(
     
     nav_panel(
       
-      "Displayed Data",
-      
-      h4(textOutput("active_table_title")),
-      
-      tableOutput("active_table")
-    ),
-    
-    nav_panel(
-      
       "Final Summary",
       
       h4("Final Summary Table"),
@@ -329,22 +320,6 @@ server <- function(input, output, session) {
           plot_var_single(res$vars, model_name)
         })
       })
-    }
-  })
-  
-  output$active_table_title <- renderText({
-    
-    if (input$main_tabs == "Final Distribution") {
-      
-      "Displayed Data Table: Final Distribution"
-      
-    } else if (input$main_tabs == "Variance vs Time") {
-      
-      "Displayed Data Table: Variance vs Time"
-      
-    } else {
-      
-      "Displayed Data Table"
     }
   })
   
