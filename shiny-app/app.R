@@ -10,7 +10,14 @@ source("server-plots.R")
 
 ui <- page_sidebar(
   
-  title = "Decoherence in a Hadamard Quantum Random Walk on a Line",
+  title = div(
+    
+    class = "d-flex justify-content-between align-items-center w-100",
+    
+    "Decoherence in a Hadamard Quantum Random Walk on a Line",
+    
+    input_dark_mode(id = "dark_mode")
+  ),
   
   sidebar = sidebar(
     
