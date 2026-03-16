@@ -356,7 +356,7 @@ server <- function(input, output, session) {
     
     req(length(selected_models()) > 0)
     
-    make_active_table(
+    make_table(
       
       results = res,
       

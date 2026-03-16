@@ -38,9 +38,9 @@ make_dist_plot_data <- function(dists, selected_models) {
     
     cols = c("noisy", "noiseless", "classical"),
     
-    names = "model",
+    names_to = "model",
     
-    probs = "prob"
+    values_to = "prob"
   )
   
   plot_df <- plot_df[plot_df$model %in% selected_models, , drop = FALSE]
@@ -76,9 +76,9 @@ make_var_plot_data <- function(var_tbl, selected_models) {
     
     cols = c("noisy", "noiseless", "classical"),
     
-    names = "model",
+    names_to = "model",
     
-    probs = "var"
+    values_to = "var"
   )
   
   plot_df <- plot_df[plot_df$model %in% selected_models, , drop = FALSE]
