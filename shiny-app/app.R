@@ -6,8 +6,6 @@ library(ggplot2)
 
 library(tidyr)
 
-source("main.R")
-
 source("server-plots.R")
 
 ui <- page_sidebar(
