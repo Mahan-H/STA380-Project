@@ -168,20 +168,26 @@ server <- function(input, output, session) {
   
   results <- eventReactive(input$run, {
     
-    noisy <- sim_noisy_qrw(
+    withProgress(message = "Running simulation...", value = 0, {
       
-      T = input$T,
+      incProgress(0.1, detail = "Simulating noisy QRW...")
       
-      N = input$N,
+      noisy <- sim_noisy_qrw(...)
       
-      channel = input$channel,
+      incProgress(0.4, detail = "Simulating noiseless QRW...")
       
-      init_coin = input$init_coin,
+      noiseless <- sim_noiseless_qrw(...)
       
-      p = input$p,
+      incProgress(0.3, detail = "Simulating classical RW...")
       
-      seed = input$seed
-    )
+      classical <- sim_srw(input$T)
+      
+      incProgress(0.2, detail = "Building results...")
+      
+      list(...)
+    })
+    
+  }, ignoreNULL = FALSE)
     
     noiseless <- sim_noiseless_qrw(
       
