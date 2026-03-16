@@ -417,4 +417,8 @@ Updated A.I usage:
 
 No A.I was used for package creation.
 
+New update:
+
+A.I was used for help with creating some of the rshiny components, and for help with integrating the plots into the server.
+
 # References
