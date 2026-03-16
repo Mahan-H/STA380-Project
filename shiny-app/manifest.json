@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "locale": "en_CA",
+  "platform": "4.5.2",
+  "metadata": {
+    "appmode": "static",
+    "primary_rmd": null,
+    "primary_html": "doc/my_vignette.html",
+    "content_category": "site",
+    "has_parameters": false
+  },
+  "packages": null,
+  "files": {
+    ".Rbuildignore": {
+      "checksum": "5d56b41670c7cc77cc8acacb5d7f9ad9"
+    },
+    "DESCRIPTION": {
+      "checksum": "e6a7856e0165612018c436ad2b432dcc"
+    },
+    "doc/my_vignette.html": {
+      "checksum": "9c1788dde859cc38d18a2cd8544353c2"
+    },
+    "doc/my_vignette.R": {
+      "checksum": "37171a00766f4ac2c029c01641ef1d60"
+    },
+    "doc/my_vignette.Rmd": {
+      "checksum": "f414e6d31376e77938aa4225ca5867d2"
+    },
+    "LICENSE": {
+      "checksum": "22479f3838e703ae67430bdb333824a4"
+    },
+    "LICENSE.md": {
+      "checksum": "f250cad44018c9355d9fcf6e1cc6d46d"
+    },
+    "man/apply_coin_kraus.Rd": {
+      "checksum": "bab3f39e8f96318606c6f6373904b957"
+    },
+    "man/apply_coin_op.Rd": {
+      "checksum": "43dd1feb3b047390883cad9d9c93d142"
+    },
+    "man/apply_decoherence_step.Rd": {
+      "checksum": "91d5333deaeec20826acde95c56e2ff0"
+    },
+    "man/apply_shift_op.Rd": {
+      "checksum": "ec03b9a83c9d61e917d835f7e8859488"
+    },
+    "man/apply_unitary_step.Rd": {
+      "checksum": "19dde8e03ed1560a5327439cb04d34c7"
+    },
+    "man/basis_left.Rd": {
+      "checksum": "6601b8ff2fa0442e394eeecb4bb662d9"
+    },
+    "man/basis_right.Rd": {
+      "checksum": "2d7d7b04e61db9be0d12a7d1efa04843"
+    },
+    "man/build_dist.Rd": {
+      "checksum": "c6f2a2a78688c0b44ff4352277c57721"
+    },
+    "man/build_summary_table.Rd": {
+      "checksum": "c3bf67898ca3255e48414f69eedecbfb"
+    },
+    "man/build_variance_overlay.Rd": {
+      "checksum": "b9f0226f8e7feff11f7d1182a22cb5ba"
+    },
+    "man/get_kraus_ops.Rd": {
+      "checksum": "63f1fa858ac287d2cb410f9a955d1ce3"
+    },
+    "man/hadamard_coin.Rd": {
+      "checksum": "b2218e2faaaf73f2219550afe17b273c"
+    },
+    "man/identity_coin.Rd": {
+      "checksum": "eb86bd06fd51fdc9eb79afacc379ca8a"
+    },
+    "man/init_coin_state.Rd": {
+      "checksum": "c5057d22dd67e8945471da53854ae978"
+    },
+    "man/initialize_state.Rd": {
+      "checksum": "3262ee8af416f4cd6aac544303ba796b"
+    },
+    "man/kraus_dephasing.Rd": {
+      "checksum": "7c5c15e2d510964dd446426f4ece6c07"
+    },
+    "man/kraus_depolarizing.Rd": {
+      "checksum": "bc35fc09f858daf8dbaccd37ef9dfc8c"
+    },
+    "man/kraus_probs.Rd": {
+      "checksum": "eca2bde18d2420c94e631e65514decf4"
+    },
+    "man/mean_pos.Rd": {
+      "checksum": "eed6d6a3656563c91fde8778cde563d4"
+    },
+    "man/normalize_state.Rd": {
+      "checksum": "61c686d10045d52fcd2760f1456a3f9e"
+    },
+    "man/pauli_X.Rd": {
+      "checksum": "9648e7bb7cb92353be2094cafa08d2da"
+    },
+    "man/pauli_Y.Rd": {
+      "checksum": "c157882387c1cce22f83495134b992f5"
+    },
+    "man/pauli_Z.Rd": {
+      "checksum": "39818df6885ca81ba889375f5d7aa5a7"
+    },
+    "man/pos_dist.Rd": {
+      "checksum": "149f0450352323393f0a425672832b59"
+    },
+    "man/pos_grid.Rd": {
+      "checksum": "641301bbf9a1c8e043c7c3acf30ad0bc"
+    },
+    "man/proj_left.Rd": {
+      "checksum": "0c348285e84e8050d1a32fc5ad2b4e4f"
+    },
+    "man/proj_right.Rd": {
+      "checksum": "bee71656a43f8d36a9d7e709590a7fdd"
+    },
+    "man/sample_kraus_index.Rd": {
+      "checksum": "e547e932b1a637d986b729801b9118d5"
+    },
+    "man/sim_noiseless_qrw.Rd": {
+      "checksum": "31bad892b4ddeef0ffb331e1080cd6df"
+    },
+    "man/sim_noisy_qrw.Rd": {
+      "checksum": "57f4242ebf71d0f2257bf2c51df052f3"
+    },
+    "man/sim_srw.Rd": {
+      "checksum": "293387aba0beef66816227f3442b8fa3"
+    },
+    "man/srw_dist_at_t.Rd": {
+      "checksum": "662c6d6394116a43bfcc3802b550102e"
+    },
+    "man/state_norm_sq.Rd": {
+      "checksum": "c6e4944be10446039f8e95ca99ba46f5"
+    },
+    "man/var_pos.Rd": {
+      "checksum": "078cbee40287cf61862a74a4f7216baf"
+    },
+    "Meta/vignette.rds": {
+      "checksum": "9b89ed7eb0c1df62d8c01fb02720230d"
+    },
+    "NAMESPACE": {
+      "checksum": "bf847f1aff5a38e4033178eaf12f7456"
+    },
+    "R/main.R": {
+      "checksum": "eb7acc17803fc73cf5bad607e882c146"
+    },
+    "shiny-app/app.R": {
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "shiny-app/R/main.R": {
+      "checksum": "eb7acc17803fc73cf5bad607e882c146"
+    },
+    "tests/testthat.R": {
+      "checksum": "23effb71a23cbcbbfb4be3ec2aba0d8b"
+    },
+    "tests/testthat/tests.R": {
+      "checksum": "7173c89637a39d1d6838c3e05ca12533"
+    },
+    "vignettes/my_vignette.html": {
+      "checksum": "9c1788dde859cc38d18a2cd8544353c2"
+    },
+    "vignettes/my_vignette.Rmd": {
+      "checksum": "bf7ef672adb58ae50c9bb76a725e34e5"
+    },
+    "vignettes/ref.bib": {
+      "checksum": "6a8d70cea98046195c5aa4847dc89c68"
+    }
+  },
+  "users": null
+}
