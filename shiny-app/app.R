@@ -168,15 +168,33 @@ server <- function(input, output, session) {
   
   results <- eventReactive(input$run, {
     
-    withProgress(message = "Running simulation...", value = 0, {
+    withProgress(message = "Running simulation...", value = 0, expr = {
       
       incProgress(0.1, detail = "Simulating noisy QRW...")
       
-      noisy <- sim_noisy_qrw(...)
+      noisy <- sim_noisy_qrw(
+        
+        T = input$T,
+        
+        N = input$N,
+        
+        channel = input$channel,
+        
+        init_coin = input$init_coin,
+        
+        p = input$p,
+        
+        seed = input$seed
+      )
       
       incProgress(0.4, detail = "Simulating noiseless QRW...")
       
-      noiseless <- sim_noiseless_qrw(...)
+      noiseless <- sim_noiseless_qrw(
+        
+        T = input$T,
+        
+        init_coin = input$init_coin
+      )
       
       incProgress(0.3, detail = "Simulating classical RW...")
       
@@ -184,34 +202,21 @@ server <- function(input, output, session) {
       
       incProgress(0.2, detail = "Building results...")
       
-      list(...)
+      list(
+        
+        noisy = noisy,
+        
+        noiseless = noiseless,
+        
+        classical = classical,
+        
+        dists = build_dist(noisy, noiseless, classical),
+        
+        vars = build_variance_overlay(noisy, noiseless, classical),
+        
+        summary_tbl = build_summary_table(noisy, noiseless, classical)
+      )
     })
-    
-  }, ignoreNULL = FALSE)
-    
-    noiseless <- sim_noiseless_qrw(
-      
-      T = input$T,
-      
-      init_coin = input$init_coin
-    )
-    
-    classical <- sim_srw(input$T)
-    
-    list(
-      
-      noisy = noisy,
-      
-      noiseless = noiseless,
-      
-      classical = classical,
-      
-      dists = build_dist(noisy, noiseless, classical),
-      
-      vars = build_variance_overlay(noisy, noiseless, classical),
-      
-      summary_tbl = build_summary_table(noisy, noiseless, classical)
-    )
     
   }, ignoreNULL = FALSE)
   
