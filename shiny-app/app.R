@@ -205,7 +205,7 @@ ui <- page_sidebar(
             The update is
             
             $$
-            U = S(H \\otimes I_p),
+            U = S(H \\otimes I_p)
             $$
             
             where:

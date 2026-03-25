@@ -17,6 +17,7 @@ Suggests:
     rmarkdown
 Imports:
     tidyverse,
-    mvtnorm
+    mvtnorm,
+    plotly
 Config/testthat/edition: 3
 VignetteBuilder: knitr
