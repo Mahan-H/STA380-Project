@@ -19,6 +19,39 @@ model_cols <- c(
   classical = "#27AE60"
 )
 
+plot_theme <- function(dark = FALSE) {
+  
+  if (dark) {
+    
+    theme_grey(base_size = 13) +
+      
+      theme(
+        
+        plot.background  = element_rect(fill = "#212529", colour = NA),
+        
+        panel.background = element_rect(fill = "#2c3034", colour = NA),
+        
+        panel.grid.major = element_line(colour = "#495057"),
+        
+        panel.grid.minor = element_line(colour = "#343a40"),
+        
+        text             = element_text(colour = "#dee2e6"),
+        
+        axis.text        = element_text(colour = "#adb5bd"),
+        
+        axis.ticks       = element_line(colour = "#495057"),
+        
+        legend.background = element_rect(fill = "#212529", colour = NA),
+        
+        legend.key       = element_rect(fill = "#2c3034", colour = NA)
+      )
+    
+  } else {
+    
+    theme_grey(base_size = 13)
+  }
+}
+
 make_dist_plot_data <- function(dists, selected_models) {
   
   plot_df <- data.frame(
@@ -95,7 +128,7 @@ make_var_plot_data <- function(var_tbl, selected_models) {
   plot_df
 }
 
-plot_dist_overlay <- function(plot_df, selected_models, T, N, channel, p) {
+plot_dist_overlay <- function(plot_df, selected_models, T, N, channel, p, dark = FALSE) {
   
   sub_text <- paste0(
     
@@ -125,12 +158,12 @@ plot_dist_overlay <- function(plot_df, selected_models, T, N, channel, p) {
       colour = NULL
     ) +
     
-    theme(base_size = 13) +
+    plot_theme(dark) +
     
     theme(legend.position = "top")
 }
 
-plot_var_overlay <- function(plot_df, selected_models) {
+plot_var_overlay <- function(plot_df, selected_models, dark = FALSE) {
   
   ggplot(plot_df, aes(x = time, y = var, colour = model)) +
     
@@ -149,12 +182,12 @@ plot_var_overlay <- function(plot_df, selected_models) {
       colour = NULL
     ) +
     
-    theme(base_size = 13) +
+    plot_theme(dark) +
     
     theme(legend.position = "right")
 }
 
-plot_dist_single <- function(dists, model_name, T, init_coin) {
+plot_dist_single <- function(dists, model_name, T, init_coin, dark = FALSE) {
   
   model_titles <- c(
     
@@ -187,10 +220,10 @@ plot_dist_single <- function(dists, model_name, T, init_coin) {
       y = "Probability"
     ) +
     
-    theme(base_size = 13)
+    plot_theme(dark)
 }
 
-plot_var_single <- function(var_tbl, model_name) {
+plot_var_single <- function(var_tbl, model_name, dark = FALSE) {
   
   model_titles <- c(
     
@@ -214,7 +247,7 @@ plot_var_single <- function(var_tbl, model_name) {
       y = "Var(X_t)"
     ) +
     
-    theme(base_size = 13)
+    plot_theme(dark)
 }
 
 make_table <- function(results, main_tab, selected_models) {
@@ -247,3 +280,4 @@ make_table <- function(results, main_tab, selected_models) {
   
   data.frame()
 }
+

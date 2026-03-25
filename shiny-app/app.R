@@ -16,7 +16,7 @@ ui <- page_sidebar(
     
     "Decoherence in a Hadamard Quantum Random Walk on a Line",
     
-    input_dark_mode(id = "dark_mode")
+    input_dark_mode(id = "dark")
   ),
   
   sidebar = sidebar(
@@ -177,7 +177,17 @@ server <- function(input, output, session) {
     
     withProgress(message = "Running simulation...", value = 0, expr = {
       
-      incProgress(0.1, detail = "Simulating noisy QRW...")
+      
+      incProgress(0.1, detail = "Simulating noiseless QRW...")
+      
+      noiseless <- sim_noiseless_qrw(
+        
+        T = input$T,
+        
+        init_coin = input$init_coin
+      )
+      
+      incProgress(0.4, detail = "Simulating noisy QRW...")
       
       noisy <- sim_noisy_qrw(
         
@@ -192,15 +202,6 @@ server <- function(input, output, session) {
         p = input$p,
         
         seed = input$seed
-      )
-      
-      incProgress(0.4, detail = "Simulating noiseless QRW...")
-      
-      noiseless <- sim_noiseless_qrw(
-        
-        T = input$T,
-        
-        init_coin = input$init_coin
       )
       
       incProgress(0.3, detail = "Simulating classical RW...")
@@ -262,6 +263,8 @@ server <- function(input, output, session) {
   
   output$dist_overlay_plot <- renderPlot({
     
+    dark <- isTRUE(input$dark == "dark")
+    
     plot_dist_overlay(
       
       plot_df = dist_plot_data(),
@@ -274,19 +277,27 @@ server <- function(input, output, session) {
       
       channel = input$channel,
       
-      p = input$p
+      p = input$p,
+      
+      dark = dark
     )
-  })
+    
+  }, bg = "transparent")
   
   output$var_overlay_plot <- renderPlot({
+    
+    dark <- isTRUE(input$dark == "dark")
     
     plot_var_overlay(
       
       plot_df = var_plot_data(),
       
-      selected_models = selected_models()
+      selected_models = selected_models(),
+      
+      dark = dark
     )
-  })
+    
+  }, bg = "transparent")
   
   output$dist_separate_ui <- renderUI({
     
@@ -328,37 +339,42 @@ server <- function(input, output, session) {
           
           req(model_name %in% selected_models())
           
-          plot_dist_single(res$dists, model_name, input$T, input$init_coin)
-        })
+          dark <- isTRUE(input$dark == "dark")
+          
+          plot_dist_single(
+            
+            res$dists,
+            
+            model_name,
+            
+            input$T,
+            
+            input$init_coin,
+            
+            dark = dark
+          )
+          
+        }, bg = "transparent")
         
         output[[paste0("var_", model_name)]] <- renderPlot({
           
           req(model_name %in% selected_models())
           
-          plot_var_single(res$vars, model_name)
-        })
+          dark <- isTRUE(input$dark == "dark")
+          
+          plot_var_single(
+            
+            res$vars,
+            
+            model_name,
+            
+            dark = dark
+          )
+          
+        }, bg = "transparent")
       })
     }
   })
-  
-  output$active_table <- renderTable({
-    
-    res <- results()
-    
-    req(res)
-    
-    req(length(selected_models()) > 0)
-    
-    make_table(
-      
-      results = res,
-      
-      main_tab = input$main_tabs,
-      
-      selected_models = selected_models()
-    )
-    
-  }, rownames = FALSE)
   
   output$summary_tbl <- renderTable({
     
