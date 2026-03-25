@@ -19,37 +19,103 @@ model_cols <- c(
   classical = "#27AE60"
 )
 
-plot_theme <- function(dark = FALSE) {
-  
-  if (dark) {
+plot_theme <- function(
     
-    theme_grey(base_size = 13) +
-      
-      theme(
-        
-        plot.background  = element_rect(fill = "#212529", colour = NA),
-        
-        panel.background = element_rect(fill = "#2c3034", colour = NA),
-        
-        panel.grid.major = element_line(colour = "#495057"),
-        
-        panel.grid.minor = element_line(colour = "#343a40"),
-        
-        text             = element_text(colour = "#dee2e6"),
-        
-        axis.text        = element_text(colour = "#adb5bd"),
-        
-        axis.ticks       = element_line(colour = "#495057"),
-        
-        legend.background = element_rect(fill = "#212529", colour = NA),
-        
-        legend.key       = element_rect(fill = "#2c3034", colour = NA)
-      )
+    p,
+    
+    title,
+    
+    subtitle = NULL,
+    
+    x_title,
+    
+    y_title,
+    
+    dark = FALSE,
+    
+    legend_orientation = "h",
+    
+    legend_y = 1.12,
+    
+    show_legend = TRUE
+) {
+  
+  paper_bg <- if (dark) "#212529" else "white"
+  
+  plot_bg  <- if (dark) "#2c3034" else "white"
+  
+  grid_col <- if (dark) "#495057" else "#E5E5E5"
+  
+  font_col <- if (dark) "#DEE2E6" else "#212529"
+  
+  axis_col <- if (dark) "#ADB5BD" else "#495057"
+  
+  title_text <- if (!is.null(subtitle) && nzchar(subtitle)) {
+    
+    paste0(title, "<br><sup>", subtitle, "</sup>")
     
   } else {
     
-    theme_grey(base_size = 13)
+    title
   }
+  
+  p |>
+    
+    layout(
+      
+      title = list(text = title_text, x = 0),
+      
+      paper_bgcolor = paper_bg,
+      
+      plot_bgcolor = plot_bg,
+      
+      font = list(color = font_col, size = 13),
+      
+      xaxis = list(
+        
+        title = list(text = x_title, font = list(color = font_col)),
+        
+        gridcolor = grid_col,
+        
+        zerolinecolor = grid_col,
+        
+        tickfont = list(color = axis_col)
+      ),
+      
+      yaxis = list(
+        
+        title = list(text = y_title, font = list(color = font_col)),
+        
+        gridcolor = grid_col,
+        
+        zerolinecolor = grid_col,
+        
+        tickfont = list(color = axis_col)
+      ),
+      
+      legend = list(
+        
+        orientation = legend_orientation,
+        
+        x = 0.5,
+        
+        xanchor = "center",
+        
+        y = legend_y
+      ),
+      
+      showlegend = show_legend,
+      
+      hoverlabel = list(font = list(color = font_col))
+      
+    ) |>
+    
+    config(
+      
+      displaylogo = FALSE,
+      
+      modeBarButtonsToRemove = c("select2d", "lasso2d")
+    )
 }
 
 make_dist_plot_data <- function(dists, selected_models) {
@@ -176,7 +242,7 @@ plot_dist_overlay <- function(plot_df, selected_models, T, N, channel, p, dark =
       )
   }
   
-  apply_plotly_theme(
+  plot_theme(
     
     p_obj,
     
@@ -237,7 +303,7 @@ plot_var_overlay <- function(plot_df, selected_models, dark = FALSE) {
       )
   }
   
-  apply_plotly_theme(
+  plot_theme(
     
     p_obj,
     
@@ -306,7 +372,7 @@ plot_dist_single <- function(dists, model_name, T, init_coin, dark = FALSE) {
     )
   )
   
-  apply_plotly_theme(
+  plot_theme(
     
     p_obj,
     
@@ -366,7 +432,7 @@ plot_var_single <- function(var_tbl, model_name, dark = FALSE) {
     )
   )
   
-  apply_plotly_theme(
+  plot_theme(
     
     p_obj,
     
