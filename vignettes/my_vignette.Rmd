@@ -412,7 +412,7 @@ The majority of the tests were manually made.
 None of the implementation was created by A.I, however once the all the implementations were done 
 A.I was used to verify the validity of the implementations, which lead to discovery some minor bugs
 such as off by one errors and rounding errors.
-S
+
 Updated A.I usage:
 
 No A.I was used for package creation.
