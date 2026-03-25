@@ -139,52 +139,122 @@ plot_dist_overlay <- function(plot_df, selected_models, T, N, channel, p, dark =
     " channel at p = ", p
   )
   
-  ggplot(plot_df, aes(x = pos, y = prob, colour = model)) +
+  p_obj <- plot_ly()
+  
+  for (m in selected_models) {
     
-    geom_line(linewidth = 0.9, alpha = 0.9) +
+    lab <- unname(model_labels[m])
     
-    scale_colour_manual(values = setNames(model_cols[selected_models], model_labels[selected_models])) +
+    col <- unname(model_cols[m])
     
-    labs(
-      
-      title = paste0("Final Position Distributions (T = ", T, ", N = ", N, ")"),
-      
-      subtitle = sub_text,
-      
-      x = "Position",
-      
-      y = "Probability",
-      
-      colour = NULL
-    ) +
+    df_m <- plot_df[plot_df$model == lab, , drop = FALSE]
     
-    plot_theme(dark) +
+    p_obj <- p_obj |>
+      
+      add_lines(
+        
+        data = df_m,
+        
+        x = ~pos,
+        
+        y = ~prob,
+        
+        name = lab,
+        
+        line = list(color = col, width = 2),
+        
+        hovertemplate = paste0(
+          
+          "Model: ", lab,
+          
+          "<br>Position: %{x}",
+          
+          "<br>Probability: %{y:.4f}",
+          
+          "<extra></extra>"
+        )
+      )
+  }
+  
+  apply_plotly_theme(
     
-    theme(legend.position = "top")
+    p_obj,
+    
+    title = paste0("Final Position Distributions (T = ", T, ", N = ", N, ")"),
+    
+    subtitle = sub_text,
+    
+    x_title = "Position",
+    
+    y_title = "Probability",
+    
+    dark = dark,
+    
+    legend_orientation = "h",
+    
+    legend_y = 1.12,
+    
+    show_legend = TRUE
+  )
 }
 
 plot_var_overlay <- function(plot_df, selected_models, dark = FALSE) {
   
-  ggplot(plot_df, aes(x = time, y = var, colour = model)) +
+  p_obj <- plot_ly()
+  
+  for (m in selected_models) {
     
-    geom_line(linewidth = 0.9) +
+    lab <- unname(model_labels[m])
     
-    scale_colour_manual(values = setNames(model_cols[selected_models], model_labels[selected_models])) +
+    col <- unname(model_cols[m])
     
-    labs(
+    df_m <- plot_df[plot_df$model == lab, , drop = FALSE]
+    
+    p_obj <- p_obj |>
       
-      title = "Variance vs. Time",
-      
-      x = "Time Step",
-      
-      y = "Var(X_t)",
-      
-      colour = NULL
-    ) +
+      add_lines(
+        
+        data = df_m,
+        
+        x = ~time,
+        
+        y = ~var,
+        
+        name = lab,
+        
+        line = list(color = col, width = 2),
+        
+        hovertemplate = paste0(
+          
+          "Model: ", lab,
+          
+          "<br>Time: %{x}",
+          
+          "<br>Variance: %{y:.4f}",
+          
+          "<extra></extra>"
+        )
+      )
+  }
+  
+  apply_plotly_theme(
     
-    plot_theme(dark) +
+    p_obj,
     
-    theme(legend.position = "right")
+    title = "Variance vs. Time",
+    
+    x_title = "Time Step",
+    
+    y_title = "Var(X_t)",
+    
+    dark = dark,
+    
+    legend_orientation = "v",
+    
+    legend_y = 1,
+    
+    show_legend = TRUE
+  )
 }
 
 plot_dist_single <- function(dists, model_name, T, init_coin, dark = FALSE) {
@@ -198,29 +268,60 @@ plot_dist_single <- function(dists, model_name, T, init_coin, dark = FALSE) {
     classical = "Classical RW"
   )
   
-  ggplot(dists, aes(x = pos, y = .data[[model_name]])) +
+  df_m <- data.frame(
     
-    geom_col(fill = model_cols[model_name], width = 0.8, alpha = 0.85) +
+    pos = dists$pos,
     
-    labs(
-      
-      title = paste0(model_titles[model_name], " — Final Distribution (T = ", T, ")"),
-      
-      subtitle = if (init_coin == "symmetric") {
-        
-        "Symmetric initial coin state  |ψ₀⟩ = (|↑⟩ + i|↓⟩)/√2"
-        
-      } else {
-        
-        paste("Initial coin state:", init_coin)
-      },
-      
-      x = "Position",
-      
-      y = "Probability"
-    ) +
+    prob = dists[[model_name]]
+  )
+  
+  subtitle_text <- if (init_coin == "symmetric") {
     
-    plot_theme(dark)
+    "Symmetric initial coin state |ψ₀⟩ = (|↑⟩ + i|↓⟩)/√2
+    "
+  } else {
+    
+    paste("Initial coin state:", init_coin)
+  }
+  
+  p_obj <- plot_ly(
+    
+    data = df_m,
+    
+    x = ~pos,
+    
+    y = ~prob,
+    
+    type = "bar",
+    
+    marker = list(color = unname(model_cols[model_name])),
+    
+    hovertemplate = paste0(
+      
+      "Position: %{x}",
+      
+      "<br>Probability: %{y:.4f}",
+      
+      "<extra></extra>"
+    )
+  )
+  
+  apply_plotly_theme(
+    
+    p_obj,
+    
+    title = paste0(model_titles[model_name], " — Final Distribution (T = ", T, ")"),
+    
+    subtitle = subtitle_text,
+    
+    x_title = "Position",
+    
+    y_title = "Probability",
+    
+    dark = dark,
+    
+    show_legend = FALSE
+  )
 }
 
 plot_var_single <- function(var_tbl, model_name, dark = FALSE) {
@@ -234,20 +335,51 @@ plot_var_single <- function(var_tbl, model_name, dark = FALSE) {
     classical = "Classical RW"
   )
   
-  ggplot(var_tbl, aes(x = time, y = .data[[model_name]])) +
+  df_m <- data.frame(
     
-    geom_line(linewidth = 0.9, colour = model_cols[model_name]) +
+    time = var_tbl$time,
     
-    labs(
-      
-      title = paste0(model_titles[model_name], " — Variance vs. Time"),
-      
-      x = "Time Step",
-      
-      y = "Var(X_t)"
-    ) +
+    var = var_tbl[[model_name]]
+  )
+  
+  p_obj <- plot_ly(
     
-    plot_theme(dark)
+    data = df_m,
+    
+    x = ~time,
+    
+    y = ~var,
+    
+    type = "scatter",
+    
+    mode = "lines",
+    
+    line = list(color = unname(model_cols[model_name]), width = 2),
+    
+    hovertemplate = paste0(
+      
+      "Time: %{x}",
+      
+      "<br>Variance: %{y:.4f}",
+      
+      "<extra></extra>"
+    )
+  )
+  
+  apply_plotly_theme(
+    
+    p_obj,
+    
+    title = paste0(model_titles[model_name], " — Variance vs. Time"),
+    
+    x_title = "Time Step",
+    
+    y_title = "Var(X_t)",
+    
+    dark = dark,
+    
+    show_legend = FALSE
+  )
 }
 
 make_table <- function(results, main_tab, selected_models) {

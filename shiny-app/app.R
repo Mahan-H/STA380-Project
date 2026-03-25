@@ -6,6 +6,8 @@ library(ggplot2)
 
 library(tidyr)
 
+library(plotly)
+
 source("server-plots.R")
 
 ui <- page_sidebar(
@@ -130,7 +132,7 @@ ui <- page_sidebar(
         
         condition = "input.display_mode == 'overlay'",
         
-        plotOutput("dist_overlay_plot", height = "420px")
+        plotlyOutput("dist_overlay_plot", height = "420px")
       ),
       
       conditionalPanel(
@@ -149,7 +151,7 @@ ui <- page_sidebar(
         
         condition = "input.display_mode == 'overlay'",
         
-        plotOutput("var_overlay_plot", height = "420px")
+        plotlyOutput("var_overlay_plot", height = "420px")
       ),
       
       conditionalPanel(
@@ -453,7 +455,7 @@ server <- function(input, output, session) {
     make_var_plot_data(res$vars, selected_models())
   })
   
-  output$dist_overlay_plot <- renderPlot({
+  output$dist_overlay_plot <- renderPlotly({
     
     dark <- isTRUE(input$dark == "dark")
     
@@ -474,9 +476,9 @@ server <- function(input, output, session) {
       dark = dark
     )
     
-  }, bg = "transparent")
+  })
   
-  output$var_overlay_plot <- renderPlot({
+  output$var_overlay_plot <- renderPlotly({
     
     dark <- isTRUE(input$dark == "dark")
     
@@ -489,7 +491,7 @@ server <- function(input, output, session) {
       dark = dark
     )
     
-  }, bg = "transparent")
+  })
   
   output$dist_separate_ui <- renderUI({
     
@@ -497,7 +499,7 @@ server <- function(input, output, session) {
     
     plot_list <- lapply(selected_models(), function(m) {
       
-      plotOutput(paste0("dist_", m), height = "350px")
+      plotlyOutput(paste0("dist_", m), height = "350px")
     })
     
     do.call(tagList, plot_list)
@@ -509,7 +511,7 @@ server <- function(input, output, session) {
     
     plot_list <- lapply(selected_models(), function(m) {
       
-      plotOutput(paste0("var_", m), height = "350px")
+      plotlyOutput(paste0("var_", m), height = "350px")
     })
     
     do.call(tagList, plot_list)
@@ -527,7 +529,7 @@ server <- function(input, output, session) {
         
         model_name <- m
         
-        output[[paste0("dist_", model_name)]] <- renderPlot({
+        output[[paste0("dist_", model_name)]] <- renderPlotly({
           
           req(model_name %in% selected_models())
           
@@ -546,9 +548,9 @@ server <- function(input, output, session) {
             dark = dark
           )
           
-        }, bg = "transparent")
+        })
         
-        output[[paste0("var_", model_name)]] <- renderPlot({
+        output[[paste0("var_", model_name)]] <- renderPlotly({
           
           req(model_name %in% selected_models())
           
@@ -563,7 +565,7 @@ server <- function(input, output, session) {
             dark = dark
           )
           
-        }, bg = "transparent")
+        })
       })
     }
   })
