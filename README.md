@@ -25,13 +25,13 @@ A classical random walk evolves through probabilistic left/right moves. A quantu
 For a coherent Hadamard quantum walk, these interference effects generally produce a probability distribution that spreads much faster than a classical random walk. In particular, the variance of an ideal quantum walk typically grows ballistically,
 
 $$
-\operatorname{Var}(X_t) \propto t^2,
+Var(X_t) \propto t^2
 $$
 
 while a classical symmetric random walk has diffusive spreading,
 
 $$
-\operatorname{Var}(X_t) = t.
+Var(X_t) = t
 $$
 
 Real quantum systems are not perfectly isolated. Interaction with an environment destroys phase information and produces **decoherence**. This project investigates that transition by introducing noise into the coin state and comparing the resulting walk with both the noiseless quantum model and the classical benchmark.
@@ -60,17 +60,16 @@ $$
 \begin{pmatrix}
 0\\
 1
-\end{pmatrix}.
+\end{pmatrix}
 $$
 
 The total state belongs to the tensor-product space
 
 $$
-\mathcal{H}
-=
+\mathcal{H}=
 \mathcal{H}_{\text{coin}}
 \otimes
-\mathcal{H}_{\text{position}}.
+\mathcal{H}_{\text{position}}
 $$
 
 ---
@@ -85,7 +84,7 @@ H =
 \begin{pmatrix}
 1 & 1\\
 1 & -1
-\end{pmatrix}.
+\end{pmatrix}
 $$
 
 The Hadamard coin creates a superposition of left- and right-moving amplitudes.
@@ -97,24 +96,22 @@ The Hadamard coin creates a superposition of left- and right-moving amplitudes.
 After the coin operation, the shift operator moves the walker according to the coin state:
 
 $$
-S|x,\mathrm{right}\rangle
-=
-|x+1,\mathrm{right}\rangle,
+S|x,\mathrm{right}\rangle=
+|x+1,\mathrm{right}\rangle
 $$
 
 $$
-S|x,\mathrm{left}\rangle
-=
-|x-1,\mathrm{left}\rangle.
+S|x,\mathrm{left}\rangle=
+|x-1,\mathrm{left}\rangle
 $$
 
 One noiseless quantum-walk step is therefore
 
 $$
-U = S(H \otimes I_p),
+U = S(H \otimes I_p)
 $$
 
-where \(I_p\) is the identity operator on position space.
+where $I_p$ is the identity operator on position space.
 
 ---
 
@@ -125,30 +122,26 @@ The implementation supports three initial coin states:
 ### Right
 
 $$
-|\psi_c\rangle
-=
+|\psi_c\rangle=
 |\mathrm{right}\rangle
 $$
 
 ### Left
 
 $$
-|\psi_c\rangle
-=
+|\psi_c\rangle=
 |\mathrm{left}\rangle
 $$
 
 ### Symmetric
 
 $$
-|\psi_c\rangle
-=
+|\psi_c\rangle=
 \frac{1}{\sqrt{2}}
 \left(
-|\mathrm{right}\rangle
-+
+|\mathrm{right}\rangle+
 i|\mathrm{left}\rangle
-\right).
+\right)
 $$
 
 The symmetric state is useful for producing a spatially symmetric Hadamard walk.
@@ -159,12 +152,12 @@ The symmetric state is useful for producing a spatially symmetric Hadamard walk.
 
 Decoherence is introduced through **Kraus operators** acting on the coin space.
 
-For a channel with operators \(K_k\), the density-operator evolution is
+For a channel with operators $K_k$, the density-operator evolution is
 
 $$
 \rho
 \longmapsto
-\sum_k K_k \rho K_k^\dagger.
+\sum_k K_k \rho K_k^\dagger
 $$
 
 This project uses a trajectory-based implementation: at each step a Kraus outcome is sampled according to its quantum probability, the corresponding operator is applied, and the resulting state is normalized.
@@ -178,26 +171,26 @@ The dephasing channel suppresses phase coherence while preserving the preferred 
 The implemented Kraus operators are
 
 $$
-K_0 = \sqrt{1-p}\,I,
+K_0 = \sqrt{1-p}\,I
 $$
 
 $$
 K_1 =
 \sqrt{p}\,
 |\mathrm{right}\rangle
-\langle\mathrm{right}|,
+\langle\mathrm{right}|
 $$
 
 $$
 K_2 =
 \sqrt{p}\,
 |\mathrm{left}\rangle
-\langle\mathrm{left}|.
+\langle\mathrm{left}|
 $$
 
-Here \(p\in[0,1]\) is the decoherence strength.
+Here $p\in[0,1]$ is the decoherence strength.
 
-As \(p\) increases, interference is progressively suppressed.
+As $p$ increases, interference is progressively suppressed.
 
 ---
 
@@ -208,7 +201,7 @@ The depolarizing channel introduces stronger mixing of the coin state using the 
 The Kraus operators are
 
 $$
-K_0 = \sqrt{1-p}\,I,
+K_0 = \sqrt{1-p}I
 $$
 
 $$
@@ -216,7 +209,7 @@ K_1 = \sqrt{\frac{p}{3}}X,
 \qquad
 K_2 = \sqrt{\frac{p}{3}}Y,
 \qquad
-K_3 = \sqrt{\frac{p}{3}}Z.
+K_3 = \sqrt{\frac{p}{3}}Z
 $$
 
 The Pauli matrices are
@@ -238,7 +231,7 @@ Z=
 \begin{pmatrix}
 1&0\\
 0&-1
-\end{pmatrix}.
+\end{pmatrix}
 $$
 
 ---
@@ -247,29 +240,26 @@ $$
 
 Instead of evolving a full density matrix, the noisy quantum walk is simulated using independent stochastic quantum trajectories.
 
-For trajectory \(j\), the position distribution at time \(t\) is
+For trajectory $j$, the position distribution at time $t$ is
 
 $$
-P_t^{(j)}(x)
-=
-|a_t^{(j)}(x)|^2
-+
-|b_t^{(j)}(x)|^2.
+P_t^{(j)}(x)=
+|a_t^{(j)}(x)|^2+
+|b_t^{(j)}(x)|^2
 $$
 
 The Monte Carlo estimate of the noisy distribution is
 
 $$
-\widehat{P}_t(x)
-=
+\widehat{P}_t(x)=
 \frac{1}{N}
 \sum_{j=1}^{N}
-P_t^{(j)}(x),
+P_t^{(j)}(x)
 $$
 
-where \(N\) is the number of simulated trajectories.
+where $N$ is the number of simulated trajectories.
 
-Increasing \(N\) generally reduces Monte Carlo variability at the cost of additional computation.
+Increasing $N$ generally reduces Monte Carlo variability at the cost of additional computation.
 
 ---
 
@@ -280,26 +270,25 @@ The project also computes the exact distribution of a symmetric classical random
 At each step,
 
 $$
-P(\text{left}) = P(\text{right}) = \frac{1}{2}.
+P(\text{left}) = P(\text{right}) = \frac{1}{2}
 $$
 
 After \(t\) steps, the probability of being at position \(x\) is
 
 $$
-P(X_t=x)
-=
+P(X_t=x)=
 \binom{t}{(t+x)/2}
-\left(\frac12\right)^t,
+\left(\frac12\right)^t
 $$
 
-whenever \(t+x\) is even and \(|x|\le t\).
+whenever $t+x$ is even and $|x|\le t$.
 
 For this model,
 
 $$
 E[X_t]=0,
 \qquad
-\operatorname{Var}(X_t)=t.
+Var(X_t)=t
 $$
 
 This gives a natural benchmark for identifying the quantum-to-classical transition caused by decoherence.
@@ -319,7 +308,7 @@ For each simulation, the project can compare:
 | Decoherence channel | Yes | No | No |
 | Monte Carlo trajectories | Yes | No | No |
 
-A central question is whether the noisy quantum walk becomes increasingly classical as the decoherence strength \(p\) increases.
+A central question is whether the noisy quantum walk becomes increasingly classical as the decoherence strength $p$ increases.
 
 ---
 
@@ -485,9 +474,9 @@ summary_table
 |---|---|
 | `pos_grid()` | Construct the position grid |
 | `hadamard_coin()` | Construct the Hadamard coin operator |
-| `pauli_X()` | Construct the Pauli \(X\) operator |
-| `pauli_Y()` | Construct the Pauli \(Y\) operator |
-| `pauli_Z()` | Construct the Pauli \(Z\) operator |
+| `pauli_X()` | Construct the Pauli $X$ operator |
+| `pauli_Y()` | Construct the Pauli $Y$ operator |
+| `pauli_Z()` | Construct the Pauli $Z$ operator |
 | `basis_right()` | Right coin basis vector |
 | `basis_left()` | Left coin basis vector |
 | `proj_right()` | Projector onto the right state |
@@ -531,7 +520,7 @@ summary_table
 
 Number of quantum-walk steps.
 
-A walk of \(T\) steps is represented on the position grid
+A walk of $T$ steps is represented on the position grid
 
 $$
 -T,-T+1,\ldots,T-1,T.
@@ -570,7 +559,7 @@ Decoherence strength.
 0 <= p <= 1
 ```
 
-At \(p=0\), the selected channel introduces no noise.
+At $p=0$, the selected channel introduces no noise.
 
 ### `seed`
 
@@ -584,11 +573,11 @@ The repository includes a Shiny interface under `shiny-app/`.
 
 The application allows users to control:
 
-- number of walk steps \(T\)
-- number of noisy trajectories \(N\)
+- number of walk steps $T$
+- number of noisy trajectories $N$
 - initial coin state
 - decoherence channel
-- decoherence strength \(p\)
+- decoherence strength $p$
 - random seed
 - which models are displayed
 - overlay or separate plotting modes
@@ -675,19 +664,6 @@ As decoherence becomes stronger, quantum interference is increasingly suppressed
 
 ---
 
-## Example Research Questions
-
-The code can be used to investigate questions such as:
-
-1. How does dephasing alter the final position distribution?
-2. How does depolarizing noise compare with dephasing?
-3. At what decoherence strength does the quantum walk begin to resemble a classical walk?
-4. How does the variance scaling change as noise increases?
-5. How sensitive is the walk to the initial coin state?
-6. How many Monte Carlo trajectories are required for stable numerical estimates?
-
----
-
 ## Testing
 
 The project uses `testthat`.
@@ -721,32 +697,6 @@ The tests check important mathematical and numerical properties, including:
 
 ---
 
-## Repository Structure
-
-```text
-.
-├── R/
-│   └── main.R
-├── man/
-├── shiny-app/
-│   ├── R/
-│   ├── app.R
-│   ├── server-plots.R
-│   └── manifest.json
-├── tests/
-│   ├── testthat/
-│   │   └── tests.R
-│   └── testthat.R
-├── DESCRIPTION
-├── NAMESPACE
-├── LICENSE
-├── LICENSE.md
-├── STA380-Project.Rproj
-└── README.md
-```
-
----
-
 ## Reproducibility
 
 The noisy simulation is stochastic because Kraus outcomes are sampled during each quantum trajectory.
@@ -772,8 +722,8 @@ Using the same simulation settings and seed should reproduce the same Monte Carl
 
 The computational cost of the noisy model increases with both:
 
-- the number of steps \(T\)
-- the number of trajectories \(N\)
+- the number of steps $T$
+- the number of trajectories $N$
 
 Larger values of `N` reduce Monte Carlo variability but increase runtime.
 
